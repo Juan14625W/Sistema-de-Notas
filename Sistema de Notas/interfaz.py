@@ -1,3 +1,8 @@
+"""Interfaz gráfica del sistema de notas para Uniautónoma.
+
+Este módulo construye la ventana principal con Tkinter, gestiona el login,
+registro de estudiantes, ingreso de notas y visualización de resultados.
+"""
 import os
 import tkinter as tk
 from tkinter import messagebox
@@ -21,6 +26,8 @@ FUENTE_NORMAL      = ("Segoe UI", 11)
 FUENTE_PEQUEÑA     = ("Segoe UI", 9)
 
 class App:
+    """Clase principal que construye la aplicación y controla la navegación."""
+
     def __init__(self):
         self.db = BaseDatos()
         self.logica = Logica()
@@ -32,6 +39,7 @@ class App:
         self.pantalla_login()
 
     def crear_entry(self, parent, ancho=30):
+        """Crea y devuelve un campo de texto estilizado para el formulario."""
         return tk.Entry(
             parent,
             width=ancho,
@@ -44,6 +52,7 @@ class App:
         )
 
     def crear_boton(self, parent, texto, comando, ancho=22, color=None):
+        """Crea un botón con el estilo de la aplicación y lo devuelve."""
         return tk.Button(
             parent,
             text=texto,
@@ -61,11 +70,13 @@ class App:
         )
 
     def crear_panel(self, parent, pady=20, padx=30):
+        """Crea un panel oscuro para agrupar elementos visuales dentro de la ventana."""
         frame = tk.Frame(parent, bg=COLOR_PANEL, bd=0, relief="flat")
         frame.pack(pady=pady, padx=padx, fill="both", expand=True)
         return frame
 
     def pantalla_login(self):
+        """Muestra la pantalla de inicio de sesión donde el usuario ingresa su correo."""
         self.limpiar_ventana()
         self.ventana.configure(bg=COLOR_FONDO)
 
@@ -119,6 +130,7 @@ class App:
                  bg=COLOR_FONDO, fg=COLOR_ACENTO).pack()
 
     def verificar_login(self):
+        """Valida el correo ingresado y redirige al menú si es correcto."""
         correo = self.entry_correo.get().strip()
         if correo == "":
             messagebox.showwarning("Aviso", "Ingresa tu correo")
@@ -131,6 +143,7 @@ class App:
             self.pantalla_menu()
 
     def pantalla_menu(self):
+        """Muestra el menú principal con las opciones de registro, consulta y salida."""
         self.limpiar_ventana()
         self.ventana.configure(bg=COLOR_FONDO)
 
@@ -169,6 +182,7 @@ class App:
                  bg=COLOR_PANEL, fg=COLOR_TEXTO_GRIS).pack(pady=(20, 15))
 
     def pantalla_registro(self):
+        """Muestra el formulario para registrar los datos básicos del estudiante."""
         self.limpiar_ventana()
         self.ventana.configure(bg=COLOR_FONDO)
 
@@ -209,6 +223,7 @@ class App:
                          self.pantalla_menu, color="#374151").pack(pady=5)
         
     def pantalla_notas(self):
+        """Muestra la pantalla donde se ingresan las notas del estudiante."""
         self.nombre_actual = self.entry_nombre.get().strip()
         self.codigo_actual = self.entry_codigo.get().strip()
         self.correo_reg    = self.entry_correo2.get().strip()
@@ -286,6 +301,7 @@ class App:
                          self.pantalla_registro, color="#374151").pack(pady=(5, 20))
 
     def calcular_y_guardar(self):
+        """Lee las notas ingresadas, calcula la definitiva y guarda el registro."""
         campos = {
             "C1 Trabajos":    self.c1_trabajos.get(),
             "C1 Quices":      self.c1_quices.get(),
@@ -335,6 +351,7 @@ class App:
         self.pantalla_menu()
 
     def pantalla_ver_estudiantes(self):
+        """Muestra una lista de los estudiantes registrados en la base de datos."""
         self.limpiar_ventana()
         self.ventana.configure(bg=COLOR_FONDO)
 
@@ -396,14 +413,17 @@ class App:
                          self.pantalla_menu, color="#374151").pack(pady=15)
 
     def limpiar_ventana(self):
+        """Limpia todos los widgets actuales de la ventana para cambiar de pantalla."""
         for widget in self.ventana.winfo_children():
             widget.destroy()
 
     def salir(self):
+        """Cierra la base de datos y destruye la ventana principal."""
         self.db.cerrar()
         self.ventana.destroy()
 
     def ejecutar(self):
+        """Inicia el bucle principal de Tkinter para mostrar la aplicación."""
         self.ventana.mainloop()
 
 app = App()
